@@ -1,91 +1,30 @@
 
-import java.util.ArrayList;
+import blackjack.domain.Card;
+import blackjack.domain.Hand;
 
 public class RegrasBJ {
 
-    private boolean estourou = false;
-    private int TotaldeCartas = 0;
-
-    private ArrayList<String> Cartas;
-    private ArrayList<String> As;
+    private final Hand hand;
 
     public RegrasBJ(String c1, String c2) {
-        TotaldeCartas = 0;
-        Cartas = new ArrayList();
-        As = new ArrayList();
-
-        if (c1 == "As") {
-            As.add(c1);
-        } else {
-            Cartas.add(c1);
-        }
-
-        if (c2 == "As") {
-            As.add(c2);
-        } else {
-            Cartas.add(c2);
-        }
-
-        SetTotal();
+        hand = new Hand(Card.fromLabel(c1), Card.fromLabel(c2));
 
     }//Fim do construtor
 
     public int GetCardTotal() {
-        return TotaldeCartas;
+        return hand.bestScore();
     }
 
     public void setCardTotal() {
-        TotaldeCartas = 0;
+        // Mantido para compatibilidade com a interface legada.
     }
 
     public void CardHit(String ca) {
-
-        if (ca == "As") {
-            As.add("As");
-        } else {
-            Cartas.add(ca);
-        }
-
-        if (As.size() != 0) {
-            SetTotal();
-        } else if (ca == "Jack" || ca == "Queen" || ca == "King") {
-
-            TotaldeCartas += 10;
-        } else {
-            TotaldeCartas += Integer.parseInt(ca);
-        }
-
-        CheckBust();
-
+        hand.add(Card.fromLabel(ca));
     }
 
-    private void SetTotal() {
-
-        TotaldeCartas = 0;
-        for (String c : Cartas) {
-            if (c == "Jack" || c == "Queen" || c == "King") {
-                TotaldeCartas += 10;
-            } else {
-                TotaldeCartas += Integer.parseInt(c);
-            }
-
-        }
-
-        for (String a : As) {
-
-            TotaldeCartas += 1;
-
-        }
-    }//fim ace total
-
     public boolean CheckBust() {
-        if (TotaldeCartas > 21) {
-            estourou = true;
-        } else {
-            estourou = false;
-        }
-
-        return estourou;
+        return hand.isBust();
     }
 
 }
